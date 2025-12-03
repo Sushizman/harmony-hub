@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { Play, Pause } from "lucide-react";
+import { Play, Pause, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-
 interface NowPlayingBarProps {
   currentTrack?: {
     title: string;
@@ -15,6 +14,7 @@ interface NowPlayingBarProps {
 const NowPlayingBar = ({ currentTrack }: NowPlayingBarProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState([33]);
+  const [volume, setVolume] = useState([70]);
 
   if (!currentTrack) return null;
 
@@ -75,8 +75,19 @@ const NowPlayingBar = ({ currentTrack }: NowPlayingBarProps) => {
           </div>
         </div>
 
-        {/* Empty space for balance */}
-        <div className="w-40" />
+        {/* Volume Control */}
+        <div className="flex items-center gap-3 w-40">
+          <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
+            <Volume2 className="w-4 h-4" />
+          </Button>
+          <Slider
+            value={volume}
+            onValueChange={setVolume}
+            max={100}
+            step={1}
+            className="flex-1"
+          />
+        </div>
       </div>
     </div>
   );
