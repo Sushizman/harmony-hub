@@ -1,15 +1,24 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { LogIn, LogOut, Shield } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import HeroSection from "@/components/HeroSection";
 import GenreCard from "@/components/GenreCard";
 import GenreDetail from "@/components/GenreDetail";
 import NowPlayingBar from "@/components/NowPlayingBar";
 import Header from "@/components/Header";
+import ContributorPanel from "@/components/ContributorPanel";
+import AdminDashboard from "@/pages/AdminDashboard";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import { Badge } from "@/components/ui/badge";
 
 import albumCover1 from "@/assets/album-cover-1.jpg";
 
 const Index = () => {
   const [selectedGenre, setSelectedGenre] = useState<typeof genres[0] | null>(null);
+  const [showAdminDashboard, setShowAdminDashboard] = useState(false);
+  const { user, logout, isAdmin, isContributor } = useAuth();
 
   const featuredTrack = {
     title: "Midnight Dreams",
@@ -40,6 +49,18 @@ const Index = () => {
     setSelectedGenre({ ...genre, views: genre.views + 1 });
   };
 
+  // Show admin dashboard if admin clicks the button
+  if (showAdminDashboard && isAdmin) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Sidebar />
+        <main className="ml-64">
+          <AdminDashboard onBack={() => setShowAdminDashboard(false)} />
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Sidebar />
@@ -47,7 +68,49 @@ const Index = () => {
       {/* Main Content */}
       <main className="ml-64 pb-32">
         <Header />
-        <div className="max-w-6xl mx-auto px-8 pb-8 space-y-12">
+        
+        {/* User Bar */}
+        <div className="max-w-6xl mx-auto px-8 py-4 flex items-center justify-between border-b border-border/50">
+          <div className="flex items-center gap-3">
+            {user ? (
+              <>
+                <span className="text-sm text-muted-foreground">{user.email}</span>
+                <Badge variant="outline" className="capitalize">{user.role}</Badge>
+              </>
+            ) : (
+              <span className="text-sm text-muted-foreground">Browse as guest</span>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            {/* Contributor: Show submit button */}
+            {isContributor && <ContributorPanel />}
+            
+            {/* Admin: Show dashboard button */}
+            {isAdmin && (
+              <Button variant="outline" onClick={() => setShowAdminDashboard(true)} className="gap-2">
+                <Shield className="w-4 h-4" />
+                Admin Dashboard
+              </Button>
+            )}
+            
+            {/* Auth buttons */}
+            {user ? (
+              <Button variant="ghost" onClick={logout} className="gap-2">
+                <LogOut className="w-4 h-4" />
+                Logout
+              </Button>
+            ) : (
+              <Button asChild variant="default" className="gap-2">
+                <Link to="/auth">
+                  <LogIn className="w-4 h-4" />
+                  Sign In
+                </Link>
+              </Button>
+            )}
+          </div>
+        </div>
+
+        <div className="max-w-6xl mx-auto px-8 pb-8 space-y-12 mt-8">
           {selectedGenre ? (
             <GenreDetail genre={selectedGenre} onBack={() => setSelectedGenre(null)} />
           ) : (
