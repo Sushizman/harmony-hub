@@ -19,18 +19,11 @@ interface GenreDetailProps {
 }
 
 const GenreDetail = ({ genre, onBack }: GenreDetailProps) => {
-  const recentlyPlayed = [
-    { id: 1, title: "Neon Nights", artist: "Synthwave Collective", image: albumCover2 },
-    { id: 2, title: "Sunset Glow", artist: "Chill Masters", image: albumCover3 },
-    { id: 3, title: "Deep Waters", artist: "Ambient Dreams", image: albumCover4 },
-    { id: 4, title: "Electric Soul", artist: "Future Bass", image: albumCover1 },
-  ];
-
-  const trendingNow = [
-    { id: 5, title: "Digital Love", artist: "Retro Wave", image: albumCover3 },
-    { id: 6, title: "Crystal Clear", artist: "Melodic House", image: albumCover4 },
-    { id: 7, title: "Starlight", artist: "Nocturnal", image: albumCover2 },
-    { id: 8, title: "Ocean Drive", artist: "Summer Hits", image: albumCover1 },
+  const songs = [
+    { id: 1, title: "Neon Nights", artist: "Synthwave Collective", duration: "3:45", image: albumCover2 },
+    { id: 2, title: "Sunset Glow", artist: "Chill Masters", duration: "4:12", image: albumCover3 },
+    { id: 3, title: "Deep Waters", artist: "Ambient Dreams", duration: "5:03", image: albumCover4 },
+    { id: 4, title: "Electric Soul", artist: "Future Bass", duration: "3:28", image: albumCover1 },
   ];
 
   const renderStars = (rating: number) => {
@@ -63,45 +56,24 @@ const GenreDetail = ({ genre, onBack }: GenreDetailProps) => {
         </div>
       </div>
 
-      {/* Recently Played */}
+      {/* Songs */}
       <section className="animate-fade-in">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-foreground">Recently Played</h2>
-          <button className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-            See all
-          </button>
+          <h2 className="text-2xl font-bold text-foreground">Songs</h2>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {recentlyPlayed.map((album) => (
+          {songs.map((song) => (
             <AlbumCard
-              key={album.id}
-              title={album.title}
-              artist={album.artist}
-              image={album.image}
+              key={song.id}
+              title={song.title}
+              artist={song.artist}
+              image={song.image}
+              duration={song.duration}
             />
           ))}
         </div>
       </section>
 
-      {/* Trending Now */}
-      <section className="animate-fade-in" style={{ animationDelay: "0.1s" }}>
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-foreground">Trending Now</h2>
-          <button className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-            See all
-          </button>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {trendingNow.map((album) => (
-            <AlbumCard
-              key={album.id}
-              title={album.title}
-              artist={album.artist}
-              image={album.image}
-            />
-          ))}
-        </div>
-      </section>
     </div>
   );
 };

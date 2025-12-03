@@ -16,7 +16,6 @@ const Index = () => {
     artist: "Aurora Waves",
     cover: albumCover1,
     duration: "4:32",
-    plays: "2.4M",
   };
 
   const currentTrack = {
@@ -58,9 +57,6 @@ const Index = () => {
 
               {/* Music Genres */}
               <section className="animate-fade-in" style={{ animationDelay: "0.4s" }}>
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-foreground">Browse by Genre</h2>
-                </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                   {genres.map((genre) => (
                     <GenreCard

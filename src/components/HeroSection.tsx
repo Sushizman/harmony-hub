@@ -7,7 +7,6 @@ interface HeroSectionProps {
     artist: string;
     cover: string;
     duration: string;
-    plays: string;
   };
   onPlay?: () => void;
 }
@@ -40,7 +39,7 @@ const HeroSection = ({ featuredTrack, onPlay }: HeroSectionProps) => {
         {/* Track Info */}
         <div className="flex-1 text-center md:text-left">
           <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-primary/20 text-primary mb-4">
-            FEATURED
+            RANDOM SONG OF THE DAY
           </span>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-3 animate-slide-up">
             {featuredTrack.title}
@@ -54,7 +53,6 @@ const HeroSection = ({ featuredTrack, onPlay }: HeroSectionProps) => {
               <Clock className="w-4 h-4" />
               {featuredTrack.duration}
             </span>
-            <span>{featuredTrack.plays} plays</span>
           </div>
 
           <div className="flex items-center justify-center md:justify-start gap-4 animate-slide-up" style={{ animationDelay: "0.3s" }}>
