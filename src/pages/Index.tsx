@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { LogIn, LogOut, Shield } from "lucide-react";
+import { LogIn, LogOut, Shield, Search } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import HeroSection from "@/components/HeroSection";
 import GenreCard from "@/components/GenreCard";
@@ -10,15 +10,33 @@ import Header from "@/components/Header";
 import ContributorPanel from "@/components/ContributorPanel";
 import AdminDashboard from "@/pages/AdminDashboard";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
 
 import albumCover1 from "@/assets/album-cover-1.jpg";
 
+const initialGenres = [
+  { id: 1, name: "Pop", image: undefined, views: 12450, rating: 4 },
+  { id: 2, name: "Rock", image: undefined, views: 9340, rating: 4 },
+  { id: 3, name: "Jazz", image: undefined, views: 5430, rating: 3 },
+  { id: 4, name: "Classical", image: undefined, views: 4210, rating: 4 },
+  { id: 5, name: "Country", image: undefined, views: 6780, rating: 3 },
+  { id: 6, name: "Reggae", image: undefined, views: 7120, rating: 4 },
+  { id: 7, name: "K-Pop", image: undefined, views: 21500, rating: 5 },
+  { id: 8, name: "Rap", image: undefined, views: 18920, rating: 5 },
+];
+
 const Index = () => {
+  const [genres, setGenres] = useState(initialGenres);
   const [selectedGenre, setSelectedGenre] = useState<typeof genres[0] | null>(null);
   const [showAdminDashboard, setShowAdminDashboard] = useState(false);
-  const { user, logout, isAdmin, isContributor } = useAuth();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterGenre, setFilterGenre] = useState<string>("all");
+  const { user, logout, isAdmin, isContributor, isViewer } = useAuth();
+  const { toast } = useToast();
 
   const featuredTrack = {
     title: "Midnight Dreams",
@@ -34,20 +52,39 @@ const Index = () => {
     duration: 272,
   };
 
-  const genres = [
-    { id: 1, name: "Pop", image: undefined, views: 12450, rating: 4 },
-    { id: 2, name: "Hip-Hop", image: undefined, views: 18920, rating: 5 },
-    { id: 3, name: "Rock", image: undefined, views: 9340, rating: 4 },
-    { id: 4, name: "Electronic", image: undefined, views: 15670, rating: 5 },
-    { id: 5, name: "R&B", image: undefined, views: 8120, rating: 4 },
-    { id: 6, name: "Jazz", image: undefined, views: 5430, rating: 3 },
-    { id: 7, name: "Classical", image: undefined, views: 4210, rating: 4 },
-    { id: 8, name: "Country", image: undefined, views: 6780, rating: 3 },
-  ];
-
   const handleGenreClick = (genre: typeof genres[0]) => {
-    setSelectedGenre({ ...genre, views: genre.views + 1 });
+    // Increase view count for any logged-in user
+    if (user) {
+      setGenres(prev => 
+        prev.map(g => g.id === genre.id ? { ...g, views: g.views + 1 } : g)
+      );
+      setSelectedGenre({ ...genre, views: genre.views + 1 });
+    } else {
+      setSelectedGenre(genre);
+    }
   };
+
+  const handleRateGenre = (genreId: number, rating: number) => {
+    if (!user) {
+      toast({ title: "Sign in required", description: "Please sign in to rate genres.", variant: "destructive" });
+      return;
+    }
+    if (!isViewer && !isAdmin) {
+      toast({ title: "Viewers only", description: "Only viewers can rate genres.", variant: "destructive" });
+      return;
+    }
+    setGenres(prev => 
+      prev.map(g => g.id === genreId ? { ...g, rating } : g)
+    );
+    toast({ title: "Rating saved", description: `You rated this genre ${rating} stars.` });
+  };
+
+  // Filter genres based on search and dropdown
+  const filteredGenres = genres.filter(genre => {
+    const matchesSearch = genre.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFilter = filterGenre === "all" || genre.name === filterGenre;
+    return matchesSearch && matchesFilter;
+  });
 
   // Show admin dashboard if admin clicks the button
   if (showAdminDashboard && isAdmin) {
@@ -118,10 +155,36 @@ const Index = () => {
               {/* Hero */}
               <HeroSection featuredTrack={featuredTrack} />
 
+              {/* Search & Filter Bar */}
+              <div className="flex items-center gap-4">
+                <div className="relative flex-1 max-w-sm">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search genres..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                <Select value={filterGenre} onValueChange={setFilterGenre}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue placeholder="Filter by genre" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Genres</SelectItem>
+                    {genres.map((genre) => (
+                      <SelectItem key={genre.id} value={genre.name}>
+                        {genre.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               {/* Music Genres */}
               <section className="animate-fade-in" style={{ animationDelay: "0.4s" }}>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                  {genres.map((genre) => (
+                  {filteredGenres.map((genre) => (
                     <GenreCard
                       key={genre.id}
                       name={genre.name}
@@ -129,9 +192,14 @@ const Index = () => {
                       views={genre.views}
                       rating={genre.rating}
                       onClick={() => handleGenreClick(genre)}
+                      onRate={(rating) => handleRateGenre(genre.id, rating)}
+                      canRate={!!user && (isViewer || isAdmin)}
                     />
                   ))}
                 </div>
+                {filteredGenres.length === 0 && (
+                  <p className="text-center text-muted-foreground py-8">No genres found</p>
+                )}
               </section>
             </>
           )}

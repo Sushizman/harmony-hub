@@ -8,16 +8,16 @@ interface GenreCardProps {
   rating: number;
   onPlay?: () => void;
   onClick?: () => void;
+  onRate?: (rating: number) => void;
+  canRate?: boolean;
 }
 
-const GenreCard = ({ image, name, views, rating, onPlay, onClick }: GenreCardProps) => {
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <Star
-        key={i}
-        className={`w-3 h-3 ${i < rating ? "text-primary fill-primary" : "text-muted-foreground"}`}
-      />
-    ));
+const GenreCard = ({ image, name, views, rating, onPlay, onClick, onRate, canRate }: GenreCardProps) => {
+  const handleStarClick = (e: React.MouseEvent, starIndex: number) => {
+    e.stopPropagation();
+    if (canRate && onRate) {
+      onRate(starIndex + 1);
+    }
   };
 
   return (
@@ -58,7 +58,15 @@ const GenreCard = ({ image, name, views, rating, onPlay, onClick }: GenreCardPro
             <span>{views.toLocaleString()}</span>
           </div>
           <div className="flex items-center gap-0.5">
-            {renderStars(rating)}
+            {Array.from({ length: 5 }, (_, i) => (
+              <Star
+                key={i}
+                onClick={(e) => handleStarClick(e, i)}
+                className={`w-3 h-3 transition-colors ${
+                  i < rating ? "text-primary fill-primary" : "text-muted-foreground"
+                } ${canRate ? "cursor-pointer hover:text-primary hover:fill-primary" : ""}`}
+              />
+            ))}
           </div>
         </div>
       </div>
