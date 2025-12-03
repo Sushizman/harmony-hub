@@ -1,15 +1,30 @@
-import { Play } from "lucide-react";
+import { Play, Star, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface GenreCardProps {
   image?: string;
   name: string;
+  views: number;
+  rating: number;
   onPlay?: () => void;
+  onClick?: () => void;
 }
 
-const GenreCard = ({ image, name, onPlay }: GenreCardProps) => {
+const GenreCard = ({ image, name, views, rating, onPlay, onClick }: GenreCardProps) => {
+  const renderStars = (rating: number) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <Star
+        key={i}
+        className={`w-3 h-3 ${i < rating ? "text-primary fill-primary" : "text-muted-foreground"}`}
+      />
+    ));
+  };
+
   return (
-    <div className="group relative rounded-xl overflow-hidden gradient-card transition-all duration-300 hover:scale-[1.02] hover:bg-secondary/50 cursor-pointer aspect-[16/9]">
+    <div
+      onClick={onClick}
+      className="group relative rounded-xl overflow-hidden gradient-card transition-all duration-300 hover:scale-[1.02] hover:bg-secondary/50 cursor-pointer aspect-[4/3]"
+    >
       {image ? (
         <img
           src={image}
@@ -21,17 +36,31 @@ const GenreCard = ({ image, name, onPlay }: GenreCardProps) => {
           <span className="text-muted-foreground text-sm">Add Image</span>
         </div>
       )}
-      <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
-      <div className="absolute bottom-0 left-0 right-0 p-4 flex items-center justify-between">
-        <h3 className="font-bold text-foreground text-lg">{name}</h3>
-        <Button
-          variant="player"
-          size="icon"
-          onClick={onPlay}
-          className="opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 glow-primary"
-        >
-          <Play className="w-4 h-4 ml-0.5" fill="currentColor" />
-        </Button>
+      <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 p-4">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="font-bold text-foreground text-xl">{name}</h3>
+          <Button
+            variant="player"
+            size="icon"
+            onClick={(e) => {
+              e.stopPropagation();
+              onPlay?.();
+            }}
+            className="opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 glow-primary"
+          >
+            <Play className="w-4 h-4 ml-0.5" fill="currentColor" />
+          </Button>
+        </div>
+        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+          <div className="flex items-center gap-1">
+            <Eye className="w-3 h-3" />
+            <span>{views.toLocaleString()}</span>
+          </div>
+          <div className="flex items-center gap-0.5">
+            {renderStars(rating)}
+          </div>
+        </div>
       </div>
     </div>
   );
