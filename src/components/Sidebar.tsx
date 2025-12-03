@@ -1,18 +1,10 @@
-import { Home, Search, Library, Heart, PlusCircle, Music2 } from "lucide-react";
+import { Home, Search, Music2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Sidebar = () => {
   const menuItems = [
     { icon: Home, label: "Home", active: true },
     { icon: Search, label: "Search" },
-    { icon: Library, label: "Library" },
-  ];
-
-  const playlists = [
-    { name: "Liked Songs", count: 248 },
-    { name: "Chill Vibes", count: 34 },
-    { name: "Workout Mix", count: 56 },
-    { name: "Late Night", count: 42 },
   ];
 
   return (
@@ -45,42 +37,6 @@ const Sidebar = () => {
           ))}
         </ul>
       </nav>
-
-      {/* Divider */}
-      <div className="my-6 mx-6 h-px bg-border" />
-
-      {/* Playlists */}
-      <div className="flex-1 px-3 overflow-y-auto">
-        <div className="flex items-center justify-between mb-4 px-3">
-          <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-            Playlists
-          </span>
-          <Button variant="ghost" size="iconSm" className="text-muted-foreground hover:text-foreground">
-            <PlusCircle className="w-4 h-4" />
-          </Button>
-        </div>
-
-        <ul className="space-y-1">
-          <li>
-            <Button variant="ghost" className="w-full justify-start gap-3 h-10 text-muted-foreground hover:text-foreground">
-              <div className="w-8 h-8 rounded bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                <Heart className="w-4 h-4 text-foreground" fill="currentColor" />
-              </div>
-              Liked Songs
-            </Button>
-          </li>
-          {playlists.slice(1).map((playlist) => (
-            <li key={playlist.name}>
-              <Button variant="ghost" className="w-full justify-start gap-3 h-10 text-muted-foreground hover:text-foreground">
-                <div className="w-8 h-8 rounded bg-secondary flex items-center justify-center text-xs font-semibold">
-                  {playlist.count}
-                </div>
-                {playlist.name}
-              </Button>
-            </li>
-          ))}
-        </ul>
-      </div>
     </aside>
   );
 };

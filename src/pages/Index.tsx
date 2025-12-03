@@ -1,12 +1,9 @@
 import Sidebar from "@/components/Sidebar";
 import HeroSection from "@/components/HeroSection";
-import AlbumCard from "@/components/AlbumCard";
+import GenreCard from "@/components/GenreCard";
 import NowPlayingBar from "@/components/NowPlayingBar";
 
 import albumCover1 from "@/assets/album-cover-1.jpg";
-import albumCover2 from "@/assets/album-cover-2.jpg";
-import albumCover3 from "@/assets/album-cover-3.jpg";
-import albumCover4 from "@/assets/album-cover-4.jpg";
 
 const Index = () => {
   const featuredTrack = {
@@ -24,18 +21,15 @@ const Index = () => {
     duration: 272,
   };
 
-  const recentlyPlayed = [
-    { id: 1, title: "Neon Nights", artist: "Synthwave Collective", image: albumCover2 },
-    { id: 2, title: "Sunset Glow", artist: "Chill Masters", image: albumCover3 },
-    { id: 3, title: "Deep Waters", artist: "Ambient Dreams", image: albumCover4 },
-    { id: 4, title: "Electric Soul", artist: "Future Bass", image: albumCover1 },
-  ];
-
-  const trendingNow = [
-    { id: 5, title: "Digital Love", artist: "Retro Wave", image: albumCover3 },
-    { id: 6, title: "Crystal Clear", artist: "Melodic House", image: albumCover4 },
-    { id: 7, title: "Starlight", artist: "Nocturnal", image: albumCover2 },
-    { id: 8, title: "Ocean Drive", artist: "Summer Hits", image: albumCover1 },
+  const genres = [
+    { id: 1, name: "Pop", image: undefined },
+    { id: 2, name: "Hip-Hop", image: undefined },
+    { id: 3, name: "Rock", image: undefined },
+    { id: 4, name: "Electronic", image: undefined },
+    { id: 5, name: "R&B", image: undefined },
+    { id: 6, name: "Jazz", image: undefined },
+    { id: 7, name: "Classical", image: undefined },
+    { id: 8, name: "Country", image: undefined },
   ];
 
   return (
@@ -48,41 +42,17 @@ const Index = () => {
           {/* Hero */}
           <HeroSection featuredTrack={featuredTrack} />
 
-          {/* Recently Played */}
+          {/* Music Genres */}
           <section className="animate-fade-in" style={{ animationDelay: "0.4s" }}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-foreground">Recently Played</h2>
-              <button className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                See all
-              </button>
+              <h2 className="text-2xl font-bold text-foreground">Browse by Genre</h2>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {recentlyPlayed.map((album) => (
-                <AlbumCard
-                  key={album.id}
-                  title={album.title}
-                  artist={album.artist}
-                  image={album.image}
-                />
-              ))}
-            </div>
-          </section>
-
-          {/* Trending Now */}
-          <section className="animate-fade-in" style={{ animationDelay: "0.5s" }}>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-foreground">Trending Now</h2>
-              <button className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                See all
-              </button>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {trendingNow.map((album) => (
-                <AlbumCard
-                  key={album.id}
-                  title={album.title}
-                  artist={album.artist}
-                  image={album.image}
+              {genres.map((genre) => (
+                <GenreCard
+                  key={genre.id}
+                  name={genre.name}
+                  image={genre.image}
                 />
               ))}
             </div>
