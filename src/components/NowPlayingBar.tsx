@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Play, Pause, SkipBack, SkipForward, Volume2, Heart, Shuffle, Repeat } from "lucide-react";
+import { Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 
@@ -15,8 +15,6 @@ interface NowPlayingBarProps {
 const NowPlayingBar = ({ currentTrack }: NowPlayingBarProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState([33]);
-  const [volume, setVolume] = useState([70]);
-  const [isLiked, setIsLiked] = useState(false);
 
   if (!currentTrack) return null;
 
@@ -42,25 +40,11 @@ const NowPlayingBar = ({ currentTrack }: NowPlayingBarProps) => {
             <h4 className="font-medium text-foreground truncate">{currentTrack.title}</h4>
             <p className="text-sm text-muted-foreground truncate">{currentTrack.artist}</p>
           </div>
-          <Button
-            variant="ghost"
-            size="iconSm"
-            onClick={() => setIsLiked(!isLiked)}
-            className={isLiked ? "text-accent" : "text-muted-foreground"}
-          >
-            <Heart className="w-4 h-4" fill={isLiked ? "currentColor" : "none"} />
-          </Button>
         </div>
 
         {/* Player Controls */}
         <div className="flex flex-col items-center gap-2 flex-1 max-w-xl">
           <div className="flex items-center gap-4">
-            <Button variant="playerSecondary" size="iconSm">
-              <Shuffle className="w-4 h-4" />
-            </Button>
-            <Button variant="playerSecondary" size="icon">
-              <SkipBack className="w-5 h-5" fill="currentColor" />
-            </Button>
             <Button
               variant="player"
               size="iconLg"
@@ -72,12 +56,6 @@ const NowPlayingBar = ({ currentTrack }: NowPlayingBarProps) => {
               ) : (
                 <Play className="w-5 h-5 ml-0.5" fill="currentColor" />
               )}
-            </Button>
-            <Button variant="playerSecondary" size="icon">
-              <SkipForward className="w-5 h-5" fill="currentColor" />
-            </Button>
-            <Button variant="playerSecondary" size="iconSm">
-              <Repeat className="w-4 h-4" />
             </Button>
           </div>
           <div className="flex items-center gap-3 w-full">
@@ -97,19 +75,8 @@ const NowPlayingBar = ({ currentTrack }: NowPlayingBarProps) => {
           </div>
         </div>
 
-        {/* Volume Control */}
-        <div className="flex items-center gap-3 w-40">
-          <Button variant="playerSecondary" size="iconSm">
-            <Volume2 className="w-4 h-4" />
-          </Button>
-          <Slider
-            value={volume}
-            onValueChange={setVolume}
-            max={100}
-            step={1}
-            className="flex-1"
-          />
-        </div>
+        {/* Empty space for balance */}
+        <div className="w-40" />
       </div>
     </div>
   );
